@@ -11,12 +11,12 @@ import org.springframework.web.server.ResponseStatusException;
 public final class CustomPredicate {
 
     public static RSQLCustomPredicate<String> likeForDigits() {
-        return new RSQLCustomPredicate<>(new ComparisonOperator("=digitLike="), String.class, input -> {
+        return new RSQLCustomPredicate<>(new ComparisonOperator("=numericLike="), String.class, input -> {
             Class<?> inputClass = input.getPath().getJavaType();
 
             if (!inputIsDigit(inputClass)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Фильтр digitLike применим только к числовым значениям.");
+                        "Фильтр numericLike применим только к числовым значениям.");
             }
             return input.getCriteriaBuilder()
                     .like(input.getPath().as(String.class),
