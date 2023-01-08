@@ -14,8 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static com.example.rsql.util.ValidationUtils.checkId;
-
 @Service
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
@@ -24,8 +22,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
-    public AuthorDto get(Long authorId) {
-        checkId(authorId);
+    public AuthorDto get(@NonNull Long authorId) {
         return authorMapper.authorToDto(getFromDb(authorId));
     }
 
@@ -35,14 +32,13 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorDto create(AuthorDto authorDto) {
+    public AuthorDto create(@NonNull AuthorDto authorDto) {
         Author author = authorMapper.authorDtoToEntity(authorDto);
         return authorMapper.authorToDto(authorRepository.save(author));
     }
 
     @Override
-    public AuthorDto update(Long authorId, AuthorDto authorDto) {
-        checkId(authorId);
+    public AuthorDto update(@NonNull Long authorId, @NonNull AuthorDto authorDto) {
         Author author = getFromDb(authorId);
         authorMapper.updateAuthorFromDto(authorDto, author);
         return authorMapper.authorToDto(authorRepository.save(author));
@@ -50,11 +46,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public void delete(Long authorId) {
-        checkId(authorId);
-        if (authorRepository.existsById(authorId)) {
-            authorRepository.deleteById(authorId);
-        } else throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+    public void delete(@NonNull Long authorId) {
+        authorRepository.delete(authorRepository.getReferenceById(authorId));
     }
 
     private Author getFromDb(@NonNull Long authorId) {

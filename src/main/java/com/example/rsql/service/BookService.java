@@ -2,15 +2,16 @@ package com.example.rsql.service;
 
 import com.example.rsql.dto.BookDto;
 import com.example.rsql.dto.BookDtoPage;
+import org.springframework.lang.NonNull;
 
 public interface BookService {
-    BookDto get(Long bookId);
+    BookDto get(@NonNull Long bookId);
 
     BookDtoPage getAll(String filter, Integer page, Integer size, String sort);
 
-    BookDto create(BookDto bookDto);
+    BookDto create(@NonNull BookDto bookDto);
 
-    BookDto update(Long bookId, BookDto bookDto);
+    BookDto update(@NonNull Long bookId, @NonNull BookDto bookDto);
 
-    void delete(Long bookId);
+    void delete(@NonNull Long bookId);
 }

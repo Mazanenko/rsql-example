@@ -21,7 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static com.example.rsql.util.ValidationUtils.checkId;
 import static com.example.rsql.util.rsql.CustomPredicate.likeForDigits;
 
 @Service
@@ -37,8 +36,7 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
 
     @Override
-    public BookDto get(Long bookId) {
-        checkId(bookId);
+    public BookDto get(@NonNull Long bookId) {
         return bookMapper.bookToDto(getFromDb(bookId));
     }
 
@@ -83,21 +81,20 @@ public class BookServiceImpl implements BookService {
             bookDtoPage.setTotalPages(bookPage.getTotalPages());
             bookDtoPage.setBooks(bookPage.stream().map(bookMapper::bookToDto).toList());
         } catch (Exception e) {
-           log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return bookDtoPage;
     }
 
     @Override
     @Transactional
-    public BookDto create(BookDto bookDto) {
+    public BookDto create(@NonNull BookDto bookDto) {
         Book book = bookMapper.bookDtoToEntity(bookDto);
         return bookMapper.bookToDto(bookRepository.save(book));
     }
 
     @Override
-    public BookDto update(Long bookId, BookDto bookDto) {
-        checkId(bookId);
+    public BookDto update(@NonNull Long bookId, @NonNull BookDto bookDto) {
         Book book = getFromDb(bookId);
         bookMapper.updateBookFromDto(bookDto, book);
         return bookMapper.bookToDto(bookRepository.save(book));
@@ -105,11 +102,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public void delete(Long bookId) {
-        checkId(bookId);
-        if (bookRepository.existsById(bookId)) {
-            bookRepository.deleteById(bookId);
-        } else throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+    public void delete(@NonNull Long bookId) {
+        bookRepository.delete(bookRepository.getReferenceById(bookId));
     }
 
     private Book getFromDb(@NonNull Long bookId) {
